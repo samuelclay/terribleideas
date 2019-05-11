@@ -11,7 +11,7 @@ ai_box = play.new_box(color='black', x=-350, y=0, width=30, height=120)
 ai_box.dy = 3
 
 ball = play.new_box(color='dark red', x=0, y=0, width=20, height=20)
-ball.dx = 2
+ball.dx = 4
 ball.dy = -1
 
 cam, mouth_cascade = setup_mouth_tracker()
@@ -20,6 +20,7 @@ cam, mouth_cascade = setup_mouth_tracker()
 frame = show_webcam(cam)
 cv2.imshow('Mouth Detector', frame)
 
+# 
 @play.repeat_forever
 async def do():
     frame = show_webcam(cam)
@@ -32,13 +33,17 @@ async def do():
         cam_height = frame.shape[1]
         screen_height = play.screen.height
         raw_y_coordinate = mouth_rects[0][1]
-        ypos = (raw_y_coordinate / cam_height)
-        y_coordinate = (-1 * ypos) * screen_height
-        p1_box.y = y_coordinate
-        # if len(mouth_rects) > 1:
-        #     p2_box.y = mouth_rects[1][1]
 
-        debug_print.words = f'raw_y: {raw_y_coordinate}, ypos: {ypos}, y_coordinate: {y_coordinate}'
+        # ypos represents mouth position as a percentage.
+        # in the opencv code we halve the image size;
+        # account for that here by dividing cam height by 2
+        ypos = (raw_y_coordinate / (cam_height / 2))
+
+        # convert the percentage y position to an absolute
+        # coordinate in the play coordinate system
+        # (0 is middle, 0.5 * screen height is top of screen)
+        y_coordinate = (0.5 - ypos) * screen_height
+        p1_box.y = y_coordinate
 
         for (x,y,w,h) in mouth_rects:
             y = int(y - 0.15*h)
@@ -112,5 +117,14 @@ async def do():
         ball.dy = 1
     elif ball.top >= play.screen.top:
         ball.dy = -1
+
+# make ball come back from left and right
+@play.repeat_forever
+async def do():
+    if ball.x <= play.screen.left:
+        ball.x = play.screen.right
+    elif ball.x >= play.screen.right:
+        ball.x = play.screen.left
+
 
 play.start_program() # this should always be the last line
