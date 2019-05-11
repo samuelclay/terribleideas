@@ -5,23 +5,30 @@ from tracking_camera import find_mouth_rects
 # p1_box = play.new_box(color='blue', x=350, y=0, width=30, height=120)
 # p2_box = play.new_box(color='red', x=-350, y=0, width=30, height=120)
 
-background = play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=30)
-
 play.new_text("THE WRONG PONG", x=0, y=250)
-debug_print = play.new_text("", x=0, y=0, font_size=20)
+# debug_print = play.new_text("", x=0, y=0, font_size=20)
 
 p1_box = play.new_image(image='mouth-vertical.png', x=350, y=0, size=200)
 p2_box = play.new_image(image='mouth-vertical.png', x=-350, y=0, size=200)
 
+p1_sparkles = play.new_image(image='sparkles.png', x=350, y=0, size=20)
+p2_sparkles = play.new_image(image='sparkles.png', x=-350, y=0, size=20)
+
+p1_time_to_smile = play.new_text("Cmon, flash a smile!", x=200, y=-200, font_size=20)
+p2_time_to_smile = play.new_text("Cmon, flash a smile!", x=-200, y=-200, font_size=20)
+
 ball = play.new_image(image='heart.png', x=0, y=0, size=30)
-ball.dx = 10
+
+BALL_DX = 10 # horizontal velocity is always same speed
+ball.dx = BALL_DX
 ball.dy = -2
 
 trailing_ball_1 = play.new_image(image='heart.png', x=0, y=0, size=30, transparency=30)
 trailing_ball_2 = play.new_image(image='heart.png', x=0, y=0, size=30, transparency=10)
 
 frame_count = 0
-debug_print = play.new_text('coordinates', font_size=20)
+background_loaded = False
+# debug_print = play.new_text('coordinates', font_size=20)
 
 @play.repeat_forever
 async def do():
@@ -35,6 +42,11 @@ async def do():
     # old_background = background
     # background = play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=50)
     # old_background.remove()
+
+    global background_loaded
+    if not background_loaded:
+        play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=30)
+        background_loaded = True
     
     left_img, left_mouth_rects, right_mouth_rects = find_mouth_rects()
     
@@ -54,7 +66,7 @@ async def do():
             if not negative:
                 xpos = 200 - xpos
             x_coordinate = negative * 350 + (xpos*50)
-            debug_print.words = f'cam_width: {cam_width}, screen_width: {screen_width}, raw_x_coord: {raw_x_coordinate}, xpos: {xpos}'
+            # debug_print.words = f'cam_width: {cam_width}, screen_width: {screen_width}, raw_x_coord: {raw_x_coordinate}, xpos: {xpos}'
             
             box.x = x_coordinate
 
@@ -106,16 +118,16 @@ async def do():
 @play.repeat_forever
 async def do():
     if (ball.right >= p1_box.left) and (ball.top >= p1_box.bottom) and (ball.bottom <= p1_box.top) and (ball.left < p1_box.left):
-        debug_print.words = f'ball.right: {ball.right}\nball.left: {ball.left}\n\np1_box.right: {p1_box.right}\np1_box.left: {p1_box.left}'
-        ball.dx = -1 * ball.dx
-        ball.dy = ball.dy + play.random_number(-2, 2)
-        ball.dy = min(5, max(-5, ball.dy))
+        # debug_print.words = f'ball.right: {ball.right}\nball.left: {ball.left}\n\np1_box.right: {p1_box.right}\np1_box.left: {p1_box.left}'
+        ball.dx = -1 * BALL_DX
+        ball.dy = ball.dy + play.random_number(-3, 3)
+        ball.dy = min(5, max(-6, ball.dy))
         
     if (ball.left <= p2_box.right) and (ball.top >= p2_box.bottom) and (ball.bottom <= p2_box.top) and (ball.right > p2_box.right):
-        debug_print.words = f'ball.right: {ball.right}\nball.left: {ball.left}\n\np1_box.right: {p1_box.right}\np1_box.left: {p1_box.left}'
-        ball.dx = -1 * ball.dx
-        ball.dy = ball.dy + play.random_number(-2, 2)
-        ball.dy = min(5, max(-5, ball.dy))
+        # debug_print.words = f'ball.right: {ball.right}\nball.left: {ball.left}\n\np1_box.right: {p1_box.right}\np1_box.left: {p1_box.left}'
+        ball.dx = BALL_DX
+        ball.dy = ball.dy + play.random_number(-3, 3)
+        ball.dy = min(5, max(-6, ball.dy))
 
 
 # @play.repeat_forever

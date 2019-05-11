@@ -50,7 +50,7 @@ def find_mouth_rects():
         # print(f" ---> Right: {y}")
         break
     
-    cv2.imshow('Mouth Detector', img)
+    # cv2.imshow('Mouth Detector', img)
     
     return img, left_mouth_rects, right_mouth_rects
     
