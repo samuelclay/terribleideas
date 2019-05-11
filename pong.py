@@ -5,14 +5,19 @@ from tracking_camera import find_mouth_rects
 # p1_box = play.new_box(color='blue', x=350, y=0, width=30, height=120)
 # p2_box = play.new_box(color='red', x=-350, y=0, width=30, height=120)
 
-background = play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=10)
+background = play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=30)
+
+play.new_text("MOUTH PONG", x=0, y=250)
 
 p1_box = play.new_image(image='mouth-vertical.png', x=350, y=0, size=200)
 p2_box = play.new_image(image='mouth-vertical.png', x=-350, y=0, size=200)
 
-ball = play.new_image(image='cookie.png', x=0, y=0, size=100)
+ball = play.new_image(image='heart.png', x=0, y=0, size=30)
 ball.dx = 10
 ball.dy = -1
+
+trailing_ball_1 = play.new_image(image='heart.png', x=0, y=0, size=30, transparency=30)
+trailing_ball_2 = play.new_image(image='heart.png', x=0, y=0, size=30, transparency=10)
 
 frame_count = 0
 
@@ -68,6 +73,17 @@ async def do():
 # make the ball move
 @play.repeat_forever
 async def do():
+    global frame_count
+    if frame_count % 5 == 1:
+        global trailing_ball_1
+        global trailing_ball_2
+
+        trailing_ball_2.x = trailing_ball_1.x
+        trailing_ball_2.y = trailing_ball_1.y
+
+        trailing_ball_1.x = ball.x
+        trailing_ball_1.y = ball.y
+
     ball.x += ball.dx
     ball.y += ball.dy
 
