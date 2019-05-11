@@ -5,10 +5,12 @@ from tracking_camera import find_mouth_rects
 # p1_box = play.new_box(color='blue', x=350, y=0, width=30, height=120)
 # p2_box = play.new_box(color='red', x=-350, y=0, width=30, height=120)
 
+background = play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=10)
+
 p1_box = play.new_image(image='mouth-vertical.png', x=350, y=0, size=200)
 p2_box = play.new_image(image='mouth-vertical.png', x=-350, y=0, size=200)
 
-ball = play.new_box(color='dark red', x=0, y=0, width=20, height=20)
+ball = play.new_image(image='cookie.png', x=0, y=0, size=100)
 ball.dx = 10
 ball.dy = -1
 
@@ -20,6 +22,12 @@ async def do():
     frame_count += 1
     if frame_count % 5 != 1:
         return
+
+    # update the background
+    # global background
+    # old_background = background
+    # background = play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=50)
+    # old_background.remove()
     
     left_img, left_mouth_rects, right_mouth_rects = find_mouth_rects()
     
@@ -55,6 +63,7 @@ async def do():
     
     y_coord_from_mouth_rect(right_mouth_rects, p1_box)
     y_coord_from_mouth_rect(left_mouth_rects, p2_box)
+
         
 # make the ball move
 @play.repeat_forever
