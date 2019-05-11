@@ -4,7 +4,7 @@ import numpy as np
 cam = cv2.VideoCapture(0)
 mouth_cascade = cv2.CascadeClassifier('haarcascade_mcs_mouth.xml')
 
-def show_webcam(cam=None, mirror=False):
+def show_webcam(cam=None, mirror=True):
     if not cam:
         cam = cv2.VideoCapture(0)
         

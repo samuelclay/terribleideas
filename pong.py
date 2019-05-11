@@ -40,9 +40,21 @@ async def do():
             # (0 is middle, 0.5 * screen height is top of screen)
             y_coordinate = (0.5 - ypos) * screen_height
             box.y = y_coordinate
+
+            global p1_box
+            global p2_box
+
+            if len(right_mouth_rects) > 0:
+                old_p1_box = p1_box
+                p1_box = play.new_image(image='right_mouth.jpg', x=350, y=old_p1_box.y, size=200)
+                old_p1_box.remove()
+            if len(left_mouth_rects) > 0:
+                old_p2_box = p2_box
+                p2_box = play.new_image(image='left_mouth.jpg', x=-350, y=old_p2_box.y, size=200)
+                old_p2_box.remove()
     
-    y_coord_from_mouth_rect(right_mouth_rects, p1_box)
-    y_coord_from_mouth_rect(left_mouth_rects, p2_box)
+    y_coord_from_mouth_rect(left_mouth_rects, p1_box)
+    y_coord_from_mouth_rect(right_mouth_rects, p2_box)
         
 # make the ball move
 @play.repeat_forever
