@@ -31,13 +31,13 @@ def find_mouth_rects():
     for (x,y,w,h) in left_mouth_rects:
         y = int(y - 0.15*h)
         cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 3)
-        # print(f" ---> Left: {y}")
+        print(f" ---> Left: {y}")
         break
         
     for (x,y,w,h) in right_mouth_rects:
         y = int(y - 0.15*h)
         cv2.rectangle(img, (x+int(img.shape[0]),y), (x+int(img.shape[0])+w,y+h), (0,255,0), 3)
-        # print(f" ---> Right: {y}")
+        print(f" ---> Right: {y}")
         break
     
     cv2.imshow('Mouth Detector', img)
