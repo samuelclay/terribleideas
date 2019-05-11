@@ -5,20 +5,25 @@ from tracking_camera import find_mouth_rects
 # p1_box = play.new_box(color='blue', x=350, y=0, width=30, height=120)
 # p2_box = play.new_box(color='red', x=-350, y=0, width=30, height=120)
 
-play.new_text("THE WRONG PONG", x=0, y=250)
+play.new_text("MOUTHBALL", x=0, y=250)
 # debug_print = play.new_text("", x=0, y=0, font_size=20)
 
 p1_box = play.new_image(image='mouth-vertical.png', x=350, y=0, size=200)
 p2_box = play.new_image(image='mouth-vertical.png', x=-350, y=0, size=200)
 
-p1_sparkles = play.new_image(image='sparkles.png', x=350, y=0, size=20)
-p2_sparkles = play.new_image(image='sparkles.png', x=-350, y=0, size=20)
+p1_smiley = play.new_image(image='smiley.png', x=200, y=250, size=30)
+p2_smiley = play.new_image(image='smiley.png', x=-200, y=250, size=30)
+p1_not_smiley = play.new_image(image='not-smiling.png', x=200, y=250, size=30)
+p2_not_smiley = play.new_image(image='not-smiling.png', x=-200, y=250, size=30)
 
-p1_time_to_smile = play.new_text("Cmon, flash a smile!", x=200, y=-200, font_size=20)
-p2_time_to_smile = play.new_text("Cmon, flash a smile!", x=-200, y=-200, font_size=20)
+p1_score = 0
+p2_score = 0
 
-p1_time_to_smile.hide()
-p1_time_to_smile.hide()
+p1_score_text = play.new_text(str(p1_score), x=250, y=250, font_size=40)
+p2_score_text = play.new_text(str(p2_score), x=-250, y=250, font_size=40)
+
+p1_not_smiley.hide()
+p2_not_smiley.hide()
 
 ball = play.new_image(image='heart.png', x=0, y=0, size=30)
 
@@ -39,33 +44,8 @@ async def do():
     frame_count += 1
     if frame_count % 5 != 1:
         return
-
-    # update the background
-    # global background
-    # old_background = background
-    # background = play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=50)
-    # old_background.remove()
-
-    # global background_loaded
-    # if not background_loaded:
-    #     play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=30)
-    #     background_loaded = True
     
     left_img, left_mouth_rects, right_mouth_rects, left_smile, right_smile = find_mouth_rects()
-
-    if len(left_smile) > 0:
-        p2_sparkles.show()
-        p2_time_to_smile.hide()
-    else:
-        p2_sparkles.hide()
-        p2_time_to_smile.show()
-
-    if len(right_smile) > 0:
-        p1_sparkles.show()
-        p1_time_to_smile.hide()
-    else:
-        p1_sparkles.hide()
-        p1_time_to_smile.show()
     
     def y_coord_from_mouth_rect(mouth_rects, box):
         if len(mouth_rects) > 0:            
@@ -90,10 +70,10 @@ async def do():
             # account for that here by dividing cam height by 2
             ypos = (raw_y_coordinate / cam_height)
             
-            if len(left_smile) == 0 and negative:
-                ypos = 1 - ypos
-            elif len(right_smile) == 0 and not negative:
-                ypos = 1 - ypos
+            # if len(left_smile) == 0 and negative:
+            #     ypos = 1 - ypos
+            # elif len(right_smile) == 0 and not negative:
+            #     ypos = 1 - ypos
                 
             # convert the percentage y position to an absolute
             # coordinate in the play coordinate system
@@ -116,6 +96,26 @@ async def do():
     y_coord_from_mouth_rect(right_mouth_rects, p1_box)
     y_coord_from_mouth_rect(left_mouth_rects, p2_box)
 
+    # change the smiley statuses
+    if len(left_smile) > 0:
+        p2_smiley.show()
+        p2_not_smiley.hide()
+    else:
+        p2_smiley.hide()
+        p2_not_smiley.show()
+
+    if len(right_smile) > 0:
+        p1_smiley.show()
+        p1_not_smiley.hide()
+    else:
+        p1_smiley.hide()
+        p1_not_smiley.show()
+
+    # load the background
+    global background_loaded
+    if not background_loaded:
+        play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=30)
+        background_loaded = True
         
 # make the ball move
 @play.repeat_forever
@@ -171,9 +171,16 @@ async def do():
 # make ball come back from left and right
 @play.repeat_forever
 async def do():
+    global p1_score
+    global p2_score
+
     if ball.x <= play.screen.left:
+        p1_score += 1
+        p1_score_text.words = str(p1_score)
         ball.x = play.screen.right
     elif ball.x >= play.screen.right:
+        p2_score += 1
+        p2_score_text.words = str(p2_score)
         ball.x = play.screen.left
 
 play.start_program() # this should always be the last line
