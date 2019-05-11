@@ -1,6 +1,8 @@
 import play # this should always be the first line
 import cv2
 from tracking_camera import find_mouth_rects
+from multicast_sender import send_message
+from multicast_receiver import setup_receiver, receiver_loop
 
 p1_box = play.new_box(color='blue', transparency=50, x=350, y=0, width=30, height=120)
 p2_box = play.new_box(color='green', transparency=50, x=350, y=0, width=30, height=120)
@@ -13,6 +15,27 @@ ai_box.dy = 3
 ball = play.new_box(color='dark red', x=0, y=0, width=20, height=20)
 ball.dx = 4
 ball.dy = -1
+
+ROLE_SENDER = "sender"
+ROLE_RECEIVER = "receiver"
+
+role = ROLE_RECEIVER
+
+if role == ROLE_RECEIVER:
+    setup_receiver()
+
+@play.repeat_forever
+async def do():
+    if role == ROLE_RECEIVER:
+        data = receiver_loop()
+        print(f" ---> Received: {data}")
+
+@play.repeat_forever
+async def do():
+    if role == ROLE_SENDER:
+        data = "Hello World"
+        send_message(data)
+        print(f" ---> Sent: {data}")
 
 @play.repeat_forever
 async def do():
