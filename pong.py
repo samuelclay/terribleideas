@@ -35,7 +35,7 @@ async def do():
     # background = play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=50)
     # old_background.remove()
     
-    left_img, left_mouth_rects, right_mouth_rects = find_mouth_rects()
+    left_img, left_mouth_rects, right_mouth_rects, left_smile, right_smile = find_mouth_rects()
     
     def y_coord_from_mouth_rect(mouth_rects, box):
         if len(mouth_rects) > 0:            
