@@ -1,7 +1,7 @@
 import play # this should always be the first line
 import cv2
 from tracking_camera import find_mouth_rects
-from multicast_receiver import setup_receiver, receiver_loop
+from multicast_receiver import setup_receiver, receiver_loop, select_loop
 
 p1_box = play.new_box(color='blue', transparency=50, x=350, y=0, width=30, height=120)
 p2_box = play.new_box(color='green', transparency=50, x=350, y=0, width=30, height=120)
@@ -26,7 +26,7 @@ if role == ROLE_RECEIVER:
 @play.repeat_forever
 async def do():
     if role == ROLE_RECEIVER:
-        data = receiver_loop()
+        data = select_loop()
         print(f" ---> Received: {data}")
 
 @play.repeat_forever
