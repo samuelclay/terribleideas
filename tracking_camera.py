@@ -1,18 +1,38 @@
 import cv2
-import sys
-import numpy as np
+
+cam = cv2.VideoCapture(0)
+mouth_cascade = cv2.CascadeClassifier('haarcascade_mcs_mouth.xml')
 
 def show_webcam(cam=None, mirror=False):
     if not cam:
         cam = cv2.VideoCapture(0)
         
-    while True:
-        ret_val, img = cam.read()
-        if mirror: 
-            img = cv2.flip(img, 1)
-        img = cv2.resize(img, None, fx=0.5, fy=0.5)
-        return img
+    ret_val, img = cam.read()
+    if mirror: 
+        img = cv2.flip(img, 1)
 
+    img = cv2.resize(img, None, fx=0.5, fy=0.5)
+    left_img = img[0:img.shape[1], 0:int(img.shape[0]/2)]
+    right_img = img[0:img.shape[1], int(img.shape[0]/2):img.shape[0]]
+
+    return left_img, right_img
+
+def find_mouth_rects():
+    left_img, right_img = show_webcam(cam)
+    left_gray = cv2.cvtColor(left_img, cv2.COLOR_BGR2GRAY)
+    right_gray = cv2.cvtColor(right_img, cv2.COLOR_BGR2GRAY)
+    left_mouth_rects = mouth_cascade.detectMultiScale(left_gray, 1.7, 11)
+    right_mouth_rects = mouth_cascade.detectMultiScale(right_gray, 1.7, 11)
+    
+    for (x,y,w,h) in left_mouth_rects:
+        y = int(y - 0.15*h)
+        cv2.rectangle(left_img, (x,y), (x+w,y+h), (0,255,0), 3)
+        break
+    
+    cv2.imshow('Mouth Detector', left_img)
+    
+    return left_img, left_mouth_rects, right_mouth_rects
+    
 def main():
     img = show_webcam()
     # img = cv2.imread('/Users/sclay/Desktop/abe.jpg')
@@ -150,16 +170,11 @@ def multiTracker():
         k = cv2.waitKey(1) & 0xff
         if k == 27 : break
 
-
-def setup_mouth_tracker():
+def mouthTracker():
     mouth_cascade = cv2.CascadeClassifier('haarcascade_mcs_mouth.xml')
     cam = cv2.VideoCapture(0)
     if mouth_cascade.empty():
       raise IOError('Unable to load the mouth cascade classifier xml file')
-    return cam, mouth_cascade
-
-def mouthTracker():
-    cam, mouth_cascade = setup_mouth_tracker()
 
     while True:
         frame = show_webcam(cam)
