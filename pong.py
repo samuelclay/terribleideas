@@ -53,8 +53,6 @@ async def do():
             if not negative:
                 xpos = 200 - xpos
             x_coordinate = negative * 350 + (xpos*50)
-            debug_print.words = f'cam_width: {cam_width}, screen_width: {screen_width}, raw_x_coord: {raw_x_coordinate}, xpos: {xpos}'
-            
             box.x = x_coordinate
 
             # ypos represents mouth position as a percentage.
