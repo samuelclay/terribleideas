@@ -48,7 +48,7 @@ async def do():
         play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=30)
         background_loaded = True
     
-    left_img, left_mouth_rects, right_mouth_rects = find_mouth_rects()
+    left_img, left_mouth_rects, right_mouth_rects, left_smile, right_smile = find_mouth_rects()
     
     def y_coord_from_mouth_rect(mouth_rects, box):
         if len(mouth_rects) > 0:            
@@ -66,8 +66,6 @@ async def do():
             if not negative:
                 xpos = 200 - xpos
             x_coordinate = negative * 350 + (xpos*50)
-            # debug_print.words = f'cam_width: {cam_width}, screen_width: {screen_width}, raw_x_coord: {raw_x_coordinate}, xpos: {xpos}'
-            
             box.x = x_coordinate
 
             # ypos represents mouth position as a percentage.

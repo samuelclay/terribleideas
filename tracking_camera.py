@@ -3,6 +3,7 @@ import numpy as np
 
 cam = cv2.VideoCapture(0)
 mouth_cascade = cv2.CascadeClassifier('haarcascade_mcs_mouth.xml')
+smile_cascade = cv2.CascadeClassifier('haarcascade_smile.xml')
 background_once = False
 
 def show_webcam(cam=None, mirror=True):
@@ -33,12 +34,27 @@ def find_mouth_rects():
     right_gray = cv2.cvtColor(right_img, cv2.COLOR_BGR2GRAY)
     left_mouth_rects = mouth_cascade.detectMultiScale(left_gray, 1.7, 11)
     right_mouth_rects = mouth_cascade.detectMultiScale(right_gray, 1.7, 11)
+    left_smile = None
+    right_smile = None
     
     for (x,y,w,h) in left_mouth_rects:
         y = int(y - 0.15*h)
-        rotated = rotate_bound(img[y:y+h,x:x+w], -90)
+        left_img = img[y:y+h,x:x+w]
+        rotated = rotate_bound(left_img, -90)
         cv2.imwrite('left_mouth.jpg', rotated)
         cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 3)
+        
+        left_smile = smile_cascade.detectMultiScale(
+            left_gray,
+            scaleFactor=1.16,
+            minNeighbors=35,
+            minSize=(25, 25),
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
+        for (x2, y2, w2, h2) in left_smile:
+            cv2.rectangle(img, (x2, y2), (x2+w2, y2+h2), (255, 0, 0), 2)
+            cv2.putText(img,'Smile',(x,y-7), 3, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
+        
         # print(f" ---> Left: {y}")
         break
         
@@ -47,12 +63,24 @@ def find_mouth_rects():
         rotated = rotate_bound(img[y:y+h,x+int(img.shape[0]):x+int(img.shape[0])+w], 90)
         cv2.imwrite('right_mouth.jpg', rotated)
         cv2.rectangle(img, (x+int(img.shape[0]),y), (x+int(img.shape[0])+w,y+h), (0,255,0), 3)
+        
+        right_smile = smile_cascade.detectMultiScale(
+            right_gray,
+            scaleFactor=1.16,
+            minNeighbors=35,
+            minSize=(25, 25),
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
+        for (x2, y2, w2, h2) in right_smile:
+            cv2.rectangle(img, (x2+int(img.shape[0]), y2), (x2+w2+int(img.shape[0]), y2+h2), (255, 0, 0), 2)
+            cv2.putText(img,'Smile',(x+int(img.shape[0]),y-7), 3, 1.2, (0, 255, 0), 2, cv2.LINE_AA)
+        
         # print(f" ---> Right: {y}")
         break
     
     # cv2.imshow('Mouth Detector', img)
     
-    return img, left_mouth_rects, right_mouth_rects
+    return img, left_mouth_rects, right_mouth_rects, left_smile, right_smile
     
 def rotate_bound(image, angle):
     # grab the dimensions of the image and then determine the
