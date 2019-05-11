@@ -53,8 +53,8 @@ async def do():
                 p2_box = play.new_image(image='left_mouth.jpg', x=-350, y=old_p2_box.y, size=200)
                 old_p2_box.remove()
     
-    y_coord_from_mouth_rect(left_mouth_rects, p1_box)
-    y_coord_from_mouth_rect(right_mouth_rects, p2_box)
+    y_coord_from_mouth_rect(right_mouth_rects, p1_box)
+    y_coord_from_mouth_rect(left_mouth_rects, p2_box)
         
 # make the ball move
 @play.repeat_forever
