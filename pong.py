@@ -1,4 +1,5 @@
 import play # this should always be the first line
+import random
 import cv2
 from tracking_camera import find_mouth_rects
 
@@ -39,6 +40,7 @@ frame_count = 0
 
 background = play.new_image(image='background.jpg', x=0, y=0, size=160, transparency=15)
 # debug_print = play.new_text('coordinates', font_size=20)
+play.pygame.mixer.init(44100, -16,2,2048)
 
 @play.repeat_forever
 async def do():
@@ -78,9 +80,9 @@ async def do():
             # account for that here by dividing cam height by 2
             ypos = (raw_y_coordinate / cam_height)
             
-            # if len(left_smile) == 0 and negative:
+            # if len(left_smile) == 0 and negative == -1:
             #     ypos = 1 - ypos
-            # elif len(right_smile) == 0 and not negative:
+            # elif len(right_smile) == 0 and not negative == 1:
             #     ypos = 1 - ypos
                 
             # convert the percentage y position to an absolute
@@ -150,13 +152,14 @@ async def do():
         ball.dx = -1 * BALL_DX
         ball.dy = ball.dy + play.random_number(-3, 3)
         ball.dy = min(5, max(-6, ball.dy))
+        play.pygame.mixer.Sound('kiss%s.wav' % random.randint(1,5)).play()
         
     if (ball.left <= p2_box.right) and (ball.top >= p2_box.bottom) and (ball.bottom <= p2_box.top) and (ball.right > p2_box.right):
         # debug_print.words = f'ball.right: {ball.right}\nball.left: {ball.left}\n\np1_box.right: {p1_box.right}\np1_box.left: {p1_box.left}'
         ball.dx = BALL_DX
         ball.dy = ball.dy + play.random_number(-3, 3)
         ball.dy = min(5, max(-6, ball.dy))
-
+        play.pygame.mixer.Sound('kiss%s.wav' % random.randint(1,5)).play()
 
 # @play.repeat_forever
 # async def do():
