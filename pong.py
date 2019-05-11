@@ -7,14 +7,15 @@ from tracking_camera import find_mouth_rects
 
 background = play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=30)
 
-play.new_text("MOUTH PONG", x=0, y=250)
+play.new_text("THE WRONG PONG", x=0, y=250)
+debug_print = play.new_text("", x=0, y=0, font_size=20)
 
 p1_box = play.new_image(image='mouth-vertical.png', x=350, y=0, size=200)
 p2_box = play.new_image(image='mouth-vertical.png', x=-350, y=0, size=200)
 
 ball = play.new_image(image='heart.png', x=0, y=0, size=30)
 ball.dx = 10
-ball.dy = -1
+ball.dy = -2
 
 trailing_ball_1 = play.new_image(image='heart.png', x=0, y=0, size=30, transparency=30)
 trailing_ball_2 = play.new_image(image='heart.png', x=0, y=0, size=30, transparency=10)
@@ -91,9 +92,17 @@ async def do():
 @play.repeat_forever
 async def do():
     if (ball.right >= p1_box.left) and (ball.top >= p1_box.bottom) and (ball.bottom <= p1_box.top) and (ball.left < p1_box.left):
+        debug_print.words = f'ball.right: {ball.right}\nball.left: {ball.left}\n\np1_box.right: {p1_box.right}\np1_box.left: {p1_box.left}'
         ball.dx = -1 * ball.dx
+        ball.dy = ball.dy + play.random_number(-2, 2)
+        ball.dy = min(5, max(-5, ball.dy))
+        
     if (ball.left <= p2_box.right) and (ball.top >= p2_box.bottom) and (ball.bottom <= p2_box.top) and (ball.right > p2_box.right):
+        debug_print.words = f'ball.right: {ball.right}\nball.left: {ball.left}\n\np1_box.right: {p1_box.right}\np1_box.left: {p1_box.left}'
         ball.dx = -1 * ball.dx
+        ball.dy = ball.dy + play.random_number(-2, 2)
+        ball.dy = min(5, max(-5, ball.dy))
+
 
 # @play.repeat_forever
 # async def do():
@@ -110,10 +119,8 @@ async def do():
 # make ball bounce off bottom and top walls
 @play.repeat_forever
 async def do():
-    if ball.bottom <= play.screen.bottom:
-        ball.dy = 1
-    elif ball.top >= play.screen.top:
-        ball.dy = -1
+    if ball.bottom <= play.screen.bottom or ball.top >= play.screen.top:
+        ball.dy = -1 * ball.dy
 
 # make ball come back from left and right
 @play.repeat_forever
