@@ -17,6 +17,9 @@ p2_sparkles = play.new_image(image='sparkles.png', x=-350, y=0, size=20)
 p1_time_to_smile = play.new_text("Cmon, flash a smile!", x=200, y=-200, font_size=20)
 p2_time_to_smile = play.new_text("Cmon, flash a smile!", x=-200, y=-200, font_size=20)
 
+p1_time_to_smile.hide()
+p1_time_to_smile.hide()
+
 ball = play.new_image(image='heart.png', x=0, y=0, size=30)
 
 BALL_DX = 10 # horizontal velocity is always same speed
@@ -49,6 +52,20 @@ async def do():
         background_loaded = True
     
     left_img, left_mouth_rects, right_mouth_rects, left_smile, right_smile = find_mouth_rects()
+
+    if len(left_smile) > 0:
+        p2_sparkles.show()
+        p2_time_to_smile.hide()
+    else:
+        p2_sparkles.hide()
+        p2_time_to_smile.show()
+
+    if len(right_smile) > 0:
+        p1_sparkles.show()
+        p1_time_to_smile.hide()
+    else:
+        p1_sparkles.hide()
+        p1_time_to_smile.show()
     
     def y_coord_from_mouth_rect(mouth_rects, box):
         if len(mouth_rects) > 0:            
