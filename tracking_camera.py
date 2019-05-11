@@ -114,7 +114,7 @@ def multiTracker():
 
     bbox1 = cv2.selectROI('tracking', frame)
     bbox2 = cv2.selectROI('tracking', frame)
-    bbox3 = cv2.selectROI('tracking', frame)
+    # bbox3 = cv2.selectROI('tracking', frame)
 
     while True:
         # Read a new frame
@@ -126,7 +126,7 @@ def multiTracker():
         if not init_once:
             ok = tracker.add(cv2.TrackerMIL_create(), frame, bbox1)
             ok = tracker.add(cv2.TrackerMIL_create(), frame, bbox2)
-            ok = tracker.add(cv2.TrackerMIL_create(), frame, bbox3)
+            # ok = tracker.add(cv2.TrackerMIL_create(), frame, bbox3)
             init_once = True
         
         # Update tracker
@@ -179,4 +179,4 @@ def mouthTracker():
             break
 
 if __name__ == '__main__':
-    mouthTracker()
+    multiTracker()
