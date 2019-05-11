@@ -2,8 +2,11 @@ import play # this should always be the first line
 import cv2
 from tracking_camera import find_mouth_rects
 
-p1_box = play.new_box(color='blue', x=350, y=0, width=30, height=120)
-p2_box = play.new_box(color='red', x=-350, y=0, width=30, height=120)
+# p1_box = play.new_box(color='blue', x=350, y=0, width=30, height=120)
+# p2_box = play.new_box(color='red', x=-350, y=0, width=30, height=120)
+
+p1_box = play.new_image(image='mouth-vertical.png', x=350, y=0, size=200)
+p2_box = play.new_image(image='mouth-vertical.png', x=-350, y=0, size=200)
 
 ball = play.new_box(color='dark red', x=0, y=0, width=20, height=20)
 ball.dx = 10
@@ -15,7 +18,7 @@ frame_count = 0
 async def do():
     global frame_count
     frame_count += 1
-    if frame_count % 10 != 0:
+    if frame_count % 5 != 1:
         return
     
     left_img, left_mouth_rects, right_mouth_rects = find_mouth_rects()
@@ -38,8 +41,8 @@ async def do():
             y_coordinate = (0.5 - ypos) * screen_height
             box.y = y_coordinate
     
-    y_coord_from_mouth_rect(left_mouth_rects, p1_box)
-    y_coord_from_mouth_rect(right_mouth_rects, p2_box)
+    y_coord_from_mouth_rect(right_mouth_rects, p1_box)
+    y_coord_from_mouth_rect(left_mouth_rects, p2_box)
         
 # make the ball move
 @play.repeat_forever
