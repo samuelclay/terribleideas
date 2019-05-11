@@ -89,7 +89,12 @@ async def do():
             # in the opencv code we halve the image size;
             # account for that here by dividing cam height by 2
             ypos = (raw_y_coordinate / cam_height)
-
+            
+            if len(left_smile) == 0 and negative:
+                ypos *= -1
+            elif len(right_smile) == 0 and not negative:
+                ypos *= -1
+                
             # convert the percentage y position to an absolute
             # coordinate in the play coordinate system
             # (0 is middle, 0.5 * screen height is top of screen)
