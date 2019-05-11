@@ -61,9 +61,9 @@ async def do():
             ypos = (raw_y_coordinate / cam_height)
             
             if len(left_smile) == 0 and negative:
-                ypos *= -1
+                ypos = 1 - ypos
             elif len(right_smile) == 0 and not negative:
-                ypos *= -1
+                ypos = 1 - ypos
                 
             # convert the percentage y position to an absolute
             # coordinate in the play coordinate system
