@@ -12,13 +12,17 @@ def show_webcam(cam=None, mirror=False):
         img = cv2.flip(img, 1)
 
     img = cv2.resize(img, None, fx=0.5, fy=0.5)
-    left_img = img[0:img.shape[1], 0:int(img.shape[0]/2)]
-    right_img = img[0:img.shape[1], int(img.shape[0]/2):img.shape[0]]
 
-    return left_img, right_img
+    return img
 
 def find_mouth_rects():
-    left_img, right_img = show_webcam(cam)
+    img = show_webcam(cam)
+    
+    left_img = img[0:img.shape[1], 0:int(img.shape[0]*.95)]
+    cv2.rectangle(img, (0, 0), (int(img.shape[0]*.95), int(img.shape[1]*.95)), (0,0,255), 3)
+    right_img = img[0:img.shape[1], int(img.shape[0]):img.shape[0]*2]
+    cv2.rectangle(img, (int(img.shape[0]), 0), (img.shape[0]*2, img.shape[1]), (255,0,0), 3)
+    
     left_gray = cv2.cvtColor(left_img, cv2.COLOR_BGR2GRAY)
     right_gray = cv2.cvtColor(right_img, cv2.COLOR_BGR2GRAY)
     left_mouth_rects = mouth_cascade.detectMultiScale(left_gray, 1.7, 11)
@@ -26,12 +30,19 @@ def find_mouth_rects():
     
     for (x,y,w,h) in left_mouth_rects:
         y = int(y - 0.15*h)
-        cv2.rectangle(left_img, (x,y), (x+w,y+h), (0,255,0), 3)
+        cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 3)
+        print(f" ---> Left: {y}")
+        break
+        
+    for (x,y,w,h) in right_mouth_rects:
+        y = int(y - 0.15*h)
+        cv2.rectangle(img, (x+int(img.shape[0]),y), (x+int(img.shape[0])+w,y+h), (0,255,0), 3)
+        print(f" ---> Right: {y}")
         break
     
-    cv2.imshow('Mouth Detector', left_img)
+    cv2.imshow('Mouth Detector', img)
     
-    return left_img, left_mouth_rects, right_mouth_rects
+    return img, left_mouth_rects, right_mouth_rects
     
 def main():
     img = show_webcam()
