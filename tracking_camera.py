@@ -12,10 +12,6 @@ def show_webcam(cam=None, mirror=False):
             img = cv2.flip(img, 1)
         img = cv2.resize(img, None, fx=0.5, fy=0.5)
         return img
-        # cv2.imshow('my webcam', img)
-        # if cv2.waitKey(1) == 27:
-        #     break  # esc to quit
-    # cv2.destroyAllWindows()
 
 def main():
     img = show_webcam()
@@ -154,11 +150,16 @@ def multiTracker():
         k = cv2.waitKey(1) & 0xff
         if k == 27 : break
 
-def mouthTracker():
+
+def setup_mouth_tracker():
     mouth_cascade = cv2.CascadeClassifier('haarcascade_mcs_mouth.xml')
     cam = cv2.VideoCapture(0)
     if mouth_cascade.empty():
       raise IOError('Unable to load the mouth cascade classifier xml file')
+    return cam, mouth_cascade
+
+def mouthTracker():
+    cam, mouth_cascade = setup_mouth_tracker()
 
     while True:
         frame = show_webcam(cam)

@@ -1,4 +1,6 @@
 import play # this should always be the first line
+import cv2
+from tracking_camera import show_webcam, setup_mouth_tracker
 
 p1_box = play.new_box(color='blue', transparency=50, x=350, y=0, width=30, height=120)
 p2_box = play.new_box(color='green', transparency=50, x=350, y=0, width=30, height=120)
@@ -12,6 +14,39 @@ ball = play.new_box(color='dark red', x=0, y=0, width=20, height=20)
 ball.dx = 2
 ball.dy = -1
 
+cam, mouth_cascade = setup_mouth_tracker()
+
+# start up the webcam window
+frame = show_webcam(cam)
+cv2.imshow('Mouth Detector', frame)
+
+@play.repeat_forever
+async def do():
+    frame = show_webcam(cam)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    mouth_rects = mouth_cascade.detectMultiScale(gray, 1.7, 11)
+
+    if len(mouth_rects) > 0:
+        # convert cam input to screen coordinates
+        cam_height = frame.shape[1]
+        screen_height = play.screen.height
+        raw_y_coordinate = mouth_rects[0][1]
+        ypos = (raw_y_coordinate / cam_height)
+        y_coordinate = (-1 * ypos) * screen_height
+        p1_box.y = y_coordinate
+        # if len(mouth_rects) > 1:
+        #     p2_box.y = mouth_rects[1][1]
+
+        debug_print.words = f'raw_y: {raw_y_coordinate}, ypos: {ypos}, y_coordinate: {y_coordinate}'
+
+        for (x,y,w,h) in mouth_rects:
+            y = int(y - 0.15*h)
+            cv2.rectangle(frame, (x,y), (x+w,y+h), (0,255,0), 3)
+            break
+
+    cv2.imshow('Mouth Detector', frame)
+        
 # make the ball move
 @play.repeat_forever
 async def do():
@@ -39,7 +74,7 @@ async def do():
     else:
         overlap_box.height = 0
 
-    debug_print.words = f'p1_box: [{p1_box.top},{p1_box.bottom}], p2_box: [{p2_box.top},{p2_box.bottom}], overlap: [{overlap_box.top},{overlap_box.bottom}]'
+    # debug_print.words = f'p1_box: [{p1_box.top},{p1_box.bottom}], p2_box: [{p2_box.top},{p2_box.bottom}], overlap: [{overlap_box.top},{overlap_box.bottom}]'
 
 
 # make the computer player follow the ball
