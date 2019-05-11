@@ -35,7 +35,9 @@ trailing_ball_1 = play.new_image(image='heart.png', x=0, y=0, size=30, transpare
 trailing_ball_2 = play.new_image(image='heart.png', x=0, y=0, size=30, transparency=10)
 
 frame_count = 0
-background_loaded = False
+# background_loaded = False
+
+background = play.new_image(image='background.jpg', x=0, y=0, size=160, transparency=15)
 # debug_print = play.new_text('coordinates', font_size=20)
 
 @play.repeat_forever
@@ -46,6 +48,12 @@ async def do():
         return
     
     left_img, left_mouth_rects, right_mouth_rects, left_smile, right_smile = find_mouth_rects()
+    
+    # update the background
+    global background
+    old_background = background
+    background = play.new_image(image='background.jpg', x=0, y=0, size=160, transparency=15)
+    old_background.remove()
     
     def y_coord_from_mouth_rect(mouth_rects, box):
         if len(mouth_rects) > 0:            
@@ -111,11 +119,11 @@ async def do():
         p1_smiley.hide()
         p1_not_smiley.show()
 
-    # load the background
-    global background_loaded
-    if not background_loaded:
-        play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=30)
-        background_loaded = True
+    # # load the background
+    # global background_loaded
+    # if not background_loaded:
+    #     play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=30)
+    #     background_loaded = True
         
 # make the ball move
 @play.repeat_forever
