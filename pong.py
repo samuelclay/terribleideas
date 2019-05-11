@@ -25,19 +25,19 @@ async def do():
             
             cam_height = left_img.shape[1]
             screen_height = play.screen.height
-            raw_y_coordinate = mouth_rects[0][1]
+            raw_y_coordinate = mouth_rects[0][1] / 2
 
             # ypos represents mouth position as a percentage.
             # in the opencv code we halve the image size;
             # account for that here by dividing cam height by 2
-            ypos = (raw_y_coordinate / (cam_height))
+            ypos = (raw_y_coordinate / cam_height)
 
             # convert the percentage y position to an absolute
             # coordinate in the play coordinate system
             # (0 is middle, 0.5 * screen height is top of screen)
             y_coordinate = (0.5 - ypos) * screen_height
             box.y = y_coordinate
-            # debug_print.words = f'raw_y: {raw_y_coordinate}, ypos: {ypos}, y_coordinate: {y_coordinate}'
+            # debug_print.words = f'cam_height: {cam_height}, raw_y: {raw_y_coordinate}, ypos: {ypos}, y_coordinate: {y_coordinate}'
     
     y_coord_from_mouth_rect(left_mouth_rects, p1_box)
     y_coord_from_mouth_rect(right_mouth_rects, p2_box)
