@@ -3,8 +3,10 @@ import numpy as np
 
 cam = cv2.VideoCapture(0)
 mouth_cascade = cv2.CascadeClassifier('haarcascade_mcs_mouth.xml')
+background_once = False
 
 def show_webcam(cam=None, mirror=True):
+    global background_once
     if not cam:
         cam = cv2.VideoCapture(0)
         
@@ -13,7 +15,14 @@ def show_webcam(cam=None, mirror=True):
         img = cv2.flip(img, 1)
 
     img = cv2.resize(img, None, fx=0.5, fy=0.5)
-
+    if not background_once:
+        # background_once = True
+        background = img.copy()
+        output = img.copy()
+        cv2.rectangle(background, (0, 0), (background.shape[0]*2, background.shape[1]), (255, 255, 255), -1)
+        cv2.addWeighted(background, 0.25, output, 1 - 0.25, 0, output)
+        cv2.imwrite('background.jpg', output)
+    
     return img
 
 def find_mouth_rects():
