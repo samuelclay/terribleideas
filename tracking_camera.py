@@ -34,8 +34,8 @@ def find_mouth_rects():
     right_gray = cv2.cvtColor(right_img, cv2.COLOR_BGR2GRAY)
     left_mouth_rects = mouth_cascade.detectMultiScale(left_gray, 1.7, 11)
     right_mouth_rects = mouth_cascade.detectMultiScale(right_gray, 1.7, 11)
-    left_smile = None
-    right_smile = None
+    left_smile = []
+    right_smile = []
     
     for (x,y,w,h) in left_mouth_rects:
         y = int(y - 0.15*h)
