@@ -21,6 +21,7 @@ trailing_ball_1 = play.new_image(image='heart.png', x=0, y=0, size=30, transpare
 trailing_ball_2 = play.new_image(image='heart.png', x=0, y=0, size=30, transparency=10)
 
 frame_count = 0
+debug_print = play.new_text('coordinates', font_size=20)
 
 @play.repeat_forever
 async def do():
@@ -41,8 +42,21 @@ async def do():
         if len(mouth_rects) > 0:            
             
             cam_height = left_img.shape[1]
+            cam_width = left_img.shape[0]
             screen_height = play.screen.height
+            screen_width = play.screen.width
+            
+            raw_x_coordinate = mouth_rects[0][0]
             raw_y_coordinate = mouth_rects[0][1] * 2
+            
+            xpos = (raw_x_coordinate / cam_width)
+            negative = -1 if box.x < 0 else 1
+            if not negative:
+                xpos = 200 - xpos
+            x_coordinate = negative * 350 + (xpos*50)
+            debug_print.words = f'cam_width: {cam_width}, screen_width: {screen_width}, raw_x_coord: {raw_x_coordinate}, xpos: {xpos}'
+            
+            box.x = x_coordinate
 
             # ypos represents mouth position as a percentage.
             # in the opencv code we halve the image size;
@@ -60,11 +74,11 @@ async def do():
 
             if len(right_mouth_rects) > 0:
                 old_p1_box = p1_box
-                p1_box = play.new_image(image='right_mouth.jpg', x=350, y=old_p1_box.y, size=200)
+                p1_box = play.new_image(image='right_mouth.jpg', x=old_p1_box.x, y=old_p1_box.y, size=200)
                 old_p1_box.remove()
             if len(left_mouth_rects) > 0:
                 old_p2_box = p2_box
-                p2_box = play.new_image(image='left_mouth.jpg', x=-350, y=old_p2_box.y, size=200)
+                p2_box = play.new_image(image='left_mouth.jpg', x=old_p2_box.x, y=old_p2_box.y, size=200)
                 old_p2_box.remove()
     
     y_coord_from_mouth_rect(right_mouth_rects, p1_box)
