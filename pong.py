@@ -46,10 +46,10 @@ async def do():
     # background = play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=50)
     # old_background.remove()
 
-    global background_loaded
-    if not background_loaded:
-        play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=30)
-        background_loaded = True
+    # global background_loaded
+    # if not background_loaded:
+    #     play.new_image(image='background.jpg', x=0, y=0, size=200, transparency=30)
+    #     background_loaded = True
     
     left_img, left_mouth_rects, right_mouth_rects, left_smile, right_smile = find_mouth_rects()
 
