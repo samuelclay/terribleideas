@@ -16,7 +16,7 @@ def show_webcam(cam=None, mirror=True):
 
     img = cv2.resize(img, None, fx=0.5, fy=0.5)
     if not background_once:
-        # background_once = True
+        background_once = True
         cv2.imwrite('background.jpg', img)
     
     return img
