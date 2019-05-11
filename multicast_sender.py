@@ -1,14 +1,12 @@
 import socket
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+def send_message(message):
+  MCAST_GRP = '224.1.1.1'
+  MCAST_PORT = 5007
+  sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
+  sock.sendto(message.encode(), (MCAST_GRP, MCAST_PORT))
+  
 if __name__ == "__main__":
     while 1:
-        try:
-            server_address = ('localhost', 10000)
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect(server_address)
-            sock.sendall(b"Hello world")
-        except Exception as e:
-            print(" ---> Exception: %s" % e)
-            break
+        send_message("Hello world")

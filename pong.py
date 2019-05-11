@@ -1,6 +1,7 @@
 import play # this should always be the first line
 import cv2
 from tracking_camera import find_mouth_rects
+from multicast_sender import send_message
 from multicast_receiver import setup_receiver, receiver_loop
 
 p1_box = play.new_box(color='blue', transparency=50, x=350, y=0, width=30, height=120)
