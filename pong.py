@@ -151,14 +151,14 @@ async def do():
         # debug_print.words = f'ball.right: {ball.right}\nball.left: {ball.left}\n\np1_box.right: {p1_box.right}\np1_box.left: {p1_box.left}'
         ball.dx = -1 * BALL_DX
         ball.dy = ball.dy + play.random_number(-3, 3)
-        ball.dy = min(5, max(-6, ball.dy))
+        ball.dy = min(8, max(-8, ball.dy))
         play.pygame.mixer.Sound('kiss%s.wav' % random.randint(1,5)).play()
         
     if (ball.left <= p2_box.right) and (ball.top >= p2_box.bottom) and (ball.bottom <= p2_box.top) and (ball.right > p2_box.right):
         # debug_print.words = f'ball.right: {ball.right}\nball.left: {ball.left}\n\np1_box.right: {p1_box.right}\np1_box.left: {p1_box.left}'
         ball.dx = BALL_DX
         ball.dy = ball.dy + play.random_number(-3, 3)
-        ball.dy = min(5, max(-6, ball.dy))
+        ball.dy = min(8, max(-8, ball.dy))
         play.pygame.mixer.Sound('kiss%s.wav' % random.randint(1,5)).play()
 
 # @play.repeat_forever

@@ -78,7 +78,7 @@ def find_mouth_rects():
         # print(f" ---> Right: {y}")
         break
     
-    cv2.imshow('Mouth Detector', img)
+    # cv2.imshow('Mouth Detector', img)
     
     return img, left_mouth_rects, right_mouth_rects, left_smile, right_smile
     
@@ -104,4 +104,7 @@ def rotate_bound(image, angle):
     M[1, 2] += (nH / 2) - cY
  
     # perform the actual rotation and return the image
-    return cv2.warpAffine(image, M, (nW, nH))
+    try:
+        return cv2.warpAffine(image, M, (nW, nH))
+    except:
+        return image
